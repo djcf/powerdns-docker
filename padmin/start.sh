@@ -9,6 +9,7 @@ if [ ! -f /data/padmin.sqlite ]; then
 	touch /data/padmin.sqlite
 	python create_db.py
 fi
-chown nobody /data/padmin.sqlite
+mkdir -p /data/uploads
+chown -R nobody /data
 
 exec sudo -u nobody python run.py

@@ -1,0 +1,1 @@
+RUN sqlite3 /var/db/pdns/pdns.db 'insert into supermasters values ('x.x.x.x', 'ns1.domain.com', 'admin');'

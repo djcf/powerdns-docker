@@ -1,17 +1,23 @@
-FROM debian
-MAINTAINER Dimitris Zervas <dzervas@dzervas.gr>
+FROM alpine:3.5
+MAINTAINER daniel
 
-RUN echo "deb http://repo.powerdns.com/debian jessie-auth-40 main" > /etc/apt/sources.list.d/pdns.list && \
-	echo "Package: pdns-*\nPin: origin repo.powerdns.com\nPin-Priority: 600" > /etc/apt/preferences.d/pdns && \
-	apt-get update && apt-get install -y curl && curl https://repo.powerdns.com/FD380FBB-pub.asc | apt-key add - && \
-	apt-get update && apt-get install -y pdns-server pdns-backend-sqlite3 && rm /etc/powerdns/pdns.d/pdns.simplebind.conf
+RUN apk add --update pdns pdns-backend-sqlite3 sqlite
 
-COPY create_db.sql /create_db.sql
-COPY start.sh /start.sh
+ADD https://raw.githubusercontent.com/PowerDNS/pdns/master/modules/gsqlite3backend/schema.sqlite3.sql /etc/pdns/create_db.sql
+ADD https://gist.githubusercontent.com/djcf/bcd2f725652f46b4786e29ffdc32495c/raw /usr/local/bin/minify.sh
+
+RUN mkdir -p /etc/pdns/run/sqlite3 && \
+	touch /etc/pdns/run/sqlite3/zone_db.sqlite && \
+	sqlite3 /etc/pdns/run/sqlite3/zone_db.sqlite < /etc/pdns/create_db.sql && \
+	chown pdns:pdns /etc/pdns/run/ -R && \
+	chmod +x /usr/local/bin/minify.sh && /usr/local/bin/minify.sh
+
+COPY start.sh /usr/local/bin/start.sh
+COPY pdns.conf /etc/pdns
 
 EXPOSE 53
 EXPOSE 53/udp
 EXPOSE 80
 
-VOLUME [ "/etc/powerdns/sqlite3/" ]
-CMD ["/start.sh"]
+VOLUME [ "/etc/pdns/run/sqlite3/" ]
+CMD ["/usr/local/bin/start.sh"]

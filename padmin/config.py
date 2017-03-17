@@ -5,7 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 WTF_CSRF_ENABLED = True
 SECRET_KEY = 'We are the world'
 BIND_ADDRESS = '0.0.0.0'
-PORT = 9393
+PORT = 8080
 LOGIN_TITLE = "PDNS"
 
 # TIMEOUT - for large zones
@@ -18,7 +18,8 @@ LOG_LEVEL = 'DEBUG'
 LOG_FILE = ''
 
 # Upload
-UPLOAD_DIR = os.path.join(basedir, 'upload')
+#UPLOAD_DIR = os.path.join(basedir, 'upload')
+UPLOAD_DIR = "/data/uploads"
 
 # DATABASE CONFIG
 #You'll need MySQL-python
@@ -58,12 +59,12 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 # Github Oauth
 GITHUB_OAUTH_ENABLE = False
-GITHUB_OAUTH_KEY = 'G0j1Q15aRsn36B3aD6nwKLiYbeirrUPU8nDd1wOC'
-GITHUB_OAUTH_SECRET = '0WYrKWePeBDkxlezzhFbDn1PBnCwEa0vCwVFvy6iLtgePlpT7WfUlAa9sZgm'
-GITHUB_OAUTH_SCOPE = 'email'
-GITHUB_OAUTH_URL = 'http://127.0.0.1:5000/api/v3/'
-GITHUB_OAUTH_TOKEN = 'http://127.0.0.1:5000/oauth/token'
-GITHUB_OAUTH_AUTHORIZE = 'http://127.0.0.1:5000/oauth/authorize'
+# GITHUB_OAUTH_KEY = 'G0j1Q15aRsn36B3aD6nwKLiYbeirrUPU8nDd1wOC'
+# GITHUB_OAUTH_SECRET = '0WYrKWePeBDkxlezzhFbDn1PBnCwEa0vCwVFvy6iLtgePlpT7WfUlAa9sZgm'
+# GITHUB_OAUTH_SCOPE = 'email'
+# GITHUB_OAUTH_URL = 'http://127.0.0.1:5000/api/v3/'
+# GITHUB_OAUTH_TOKEN = 'http://127.0.0.1:5000/oauth/token'
+# GITHUB_OAUTH_AUTHORIZE = 'http://127.0.0.1:5000/oauth/authorize'
 
 #Default Auth
 BASIC_ENABLED = False
@@ -71,7 +72,8 @@ SIGNUP_ENABLED = False
 
 # POWERDNS CONFIG
 PDNS_STATS_URL = 'http://dns/api/v1/'
-PDNS_API_KEY = 'Something very hard! :D'
+#PDNS_API_KEY = os.environ['API_KEY']
+PDNS_API_KEY = "1234"
 PDNS_VERSION = '4.0.3'
 
 # RECORDS ALLOWED TO EDIT
