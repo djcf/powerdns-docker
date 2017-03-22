@@ -1,0 +1,9 @@
+#pdns_host: ns0.noflag.org.uk
+pdns_port: 80
+pdns_key: xxx
+webserver_password: yyy
+nameservers:
+  - ns1.noflag.org.uk
+  - ns2.noflag.org.uk
+dns_zone: noflag.org.uk
+admin_password: 1234

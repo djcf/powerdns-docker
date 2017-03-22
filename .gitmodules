@@ -1,0 +1,6 @@
+[submodule "ansible-module-powerdns"]
+	path = ansible-module-powerdns
+	url = git@github.com:Nosmoht/ansible-module-powerdns.git
+[submodule "lib/ansible-module-powerdns"]
+	path = lib/ansible-module-powerdns
+	url = git@github.com:Nosmoht/ansible-module-powerdns.git

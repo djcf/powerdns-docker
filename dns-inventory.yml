@@ -1,0 +1,5 @@
+[dnsmaster]
+ns0.noflag.org.uk
+
+[dnsslaves]
+ns2.noflag.org.uk

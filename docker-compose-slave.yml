@@ -1,0 +1,24 @@
+version: "2"
+
+services:
+    slave:
+        build: powerdns
+        image: powerdns
+        restart: always
+        ports:
+            - "53:53"
+            - "53:53/udp"
+        volumes:
+            - "database:/etc/powerdns/sqlite3"
+        environment:
+            PDNS_TYPE: slave
+            MASTER_IP: x.x.x.x
+            MASTER_DNS: f.q.d.n
+            ADMIN_PASSWORD: "1234"
+        logging:
+          options:
+            max-size: 25k
+
+volumes:
+    database:
+        driver: local

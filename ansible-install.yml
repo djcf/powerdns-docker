@@ -1,0 +1,59 @@
+---
+# Usage: ansible-playbook --extra-vars "domain=mydomain.org subdomain=mysubdomain.noflag.org.uk" add-wordpress-vhost.yml
+- hosts: dnsmaster
+  become: true
+  vars_files:
+    - pdns-api.yml
+  tasks:
+    - name: Install powerdns master and admin panel
+      docker_service:
+        project_src: "{{ playbook_dir }}"
+        environment:
+          API_KEY: "{{ pdns_key }}"
+          WEBSERVER_PASSWORD: "{{ webserver_password }}"
+          ADMIN_PASSWORD: "{{ admin_password }}"
+
+    - name: Copy convenience scripts to host
+      copy:
+        src: "bin/{{ item }}"
+        dest: /usr/local/bin
+        mode: 0744
+      with_items:
+        - create-pdns-admin.sh
+        - pdns-cli.sh
+
+    - include: tasks/add-ns-records.yml
+      vars:
+        - kind: master
+
+    - include: add-dns-records.yml
+      with_items:
+        - powerdns
+        - dnsadmin
+        - cockpit
+
+- hosts: dnsslaves
+  become: true
+  vars_files:
+    - pdns-api.yml
+  tasks:
+    - name: Install powerdns slave
+      docker_service:
+        project_src: "{{ playbook_dir }}"
+        files: docker-compose-slave
+        environment:
+          MASTER_IP: "{{ hostvars[groups['dnsmaster'][0]]['ansible_eth0']['ipv4']['address'] }}"
+          MASTER_DNS: "{{ hostvars[groups['dnsmaster'][0]]['inventory_hostname'] }}"
+          API_KEY: "{{ pdns_port }}"
+
+    - name: Copy convenience scripts to host
+      copy:
+        src: "bin/{{ item }}"
+        dest: /usr/local/bin
+        mode: 0744
+      with_items:
+        - pdns-cli.sh
+
+    - include: tasks/add-ns-records.yml
+      vars:
+        - kind: slave

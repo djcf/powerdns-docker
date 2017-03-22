@@ -1,0 +1,21 @@
+- name: Add an ipv4 NS record
+  powerdns_record:
+    name: "{{ item }}"
+    zone: "{{ dns_zone }}"
+    type: A
+    content: "{{ ansible_default_ipv4.address }}"
+    ttl: 1440
+    pdns_host: "{{ hostvars[groups['dnsmaster'][0]]['ansible_eth0']['ipv4']['address'] }}"
+    pdns_port: "{{ pdns_port }}"
+    pdns_api_key: "{{ pdns_key }}"
+
+- name: Add an ipv6 NS record
+  powerdns_record:
+    name: "{{ item }}"
+    zone: "{{ dns_zone }}"
+    type: A
+    content: "{{ ansible_default_ipv6.address }}"
+    ttl: 1440
+    pdns_host: "{{ hostvars[groups['dnsmaster'][0]]['ansible_eth0']['ipv4']['address'] }}"
+    pdns_port: "{{ pdns_port }}"
+    pdns_api_key: "{{ pdns_key }}"

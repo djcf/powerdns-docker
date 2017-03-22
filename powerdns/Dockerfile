@@ -14,6 +14,7 @@ RUN mkdir -p /etc/pdns/run/sqlite3 && \
 
 COPY start.sh /usr/local/bin/start.sh
 COPY pdns.conf /etc/pdns
+COPY slave.conf /etc/pdns
 
 EXPOSE 53
 EXPOSE 53/udp
