@@ -5,7 +5,7 @@ Forked from https://github.com/dzervas/powerdns-docker. Optimized for simpler co
 
 ## Usage
 ### Using ansible
-This is the easiest way. 
+This should be the easiest way, but its completely untested at the moment.
 
 1. It relies on https://github.com/Nosmoht/ansible-module-powerdns, an ansible module for talking to powerdns which is located in the lib directory. So make sure to clone the repository with submodules when you do. Try `git clone --recusrive git@github.com:djcf/powerdns-docker.git` instead of the normal `git clone`.
 2. Just edit the dns-inventory.yml file so it reflects your desired infrastructure. It's advised to use ns0. as the PDNS master, and ns1-4 and slaves.
@@ -20,6 +20,8 @@ If you don't want to use ansible, you can run the containers one at a time. This
 **You can also deploy slaves the same way.** Just run `docker-compose -f docker-compose-slave.yml up -d` instead.
 
 ### Using docker
+
+Not normally recomended -- use docker-compose instead.
 
 Try something like this:
 
@@ -49,6 +51,27 @@ In the `bin` directory. If you use ansible, they get installed to /usr/local/bin
 
 `pdns-cli.sh` is a wrapper into the pdns CLI utility. Full documentation here: https://blog.powerdns.com/2016/02/02/powerdns-authoritative-the-new-old-way-to-manage-domains/
 
+# Configuring the PDNS backends
+
+This is super simple and easy. Basically just put the config relating to the backends in `powerdns/$backend.conf`. Then in docker-compose.yml or your docker run command, specify the environment such that `PDNS_BACKENDS` is a string of comma-separated PDNS backends, to be passed into the pdns.conf file as `launch=$PDNS_BACKENDS`.
+
+For example, your `powerdns/ldap.conf` file could contain:
+
+    ldap-host=ldap://ldap/
+    ldap-binddn=cn=admin,dc=ldap,dc=noflag,dc=io
+    ldap-secret=1234
+
+And your `powerdns/gsqlite3.conf` file could contain:
+
+    gsqlite3-database=/etc/pdns/run/sqlite3/zone_db.sqlite
+
+With this configuraiton, your docker-compose.yml file should contain:
+
+    environment:
+        PDNS_BACKENDS: "gsqlite3,ldap"
+
 ## TODO
 
-Only need to test it now...
+* Only need to test it now...
+* It isn't currently possible to differentiate between "master" and "native"-type servers.
+* It would be super nice if backends could be configured by environment variables

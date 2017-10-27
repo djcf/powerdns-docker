@@ -12,13 +12,13 @@ RUN mkdir -p /etc/pdns/run/sqlite3 && \
 	chown pdns:pdns /etc/pdns/run/ -R && \
 	chmod +x /usr/local/bin/minify.sh && /usr/local/bin/minify.sh
 
+COPY *.conf /etc/pdns/
 COPY start.sh /usr/local/bin/start.sh
-COPY pdns.conf /etc/pdns
-COPY slave.conf /etc/pdns
 
 EXPOSE 53
 EXPOSE 53/udp
 EXPOSE 80
 
+WORKDIR /etc/pdns
 VOLUME [ "/etc/pdns/run/sqlite3/" ]
 CMD ["/usr/local/bin/start.sh"]

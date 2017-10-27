@@ -11,15 +11,29 @@ fi
 
 chown pdns:pdns /etc/pdns/run/sqlite3/ -R
 
+INIT=false
+IFS=","
+for BACKEND in $PDNS_BACKENDS; do
+	echo "Copying $BACKEND configuration..."
+	if [ -f /etc/pdns/$BACKEND.conf ]; then
+		echo >> /etc/pdns/pdns.conf
+		cat /etc/pdns/$BACKEND.conf >> /etc/pdns/pdns.conf
+		rm /etc/pdns/$BACKEND.conf
+		INIT=true
+	fi
+done
+if $INIT ; then
+	sed -i "1s/^/launch=$PDNS_BACKENDS\n/" /etc/pdns/pdns.conf
+fi
+
+#cat pdns.conf
 if [ "$PDNS_TYPE" == "master" ]; then
-	exec pdns_server --allow-recursion=172.17.0.0/24 --local-address=0.0.0.0 --api-key="$API_KEY" --webserver-password="$WEBSERVER_PASSWORD" "$@"
-fi
-
-if [ "$PDNS_TYPE" == "ldap" ]; then
-        exec pdns_server --loglevel=9 --allow-recursion=172.17.0.0/24 --local-address=0.0.0.0 --api-key="$API_KEY" "$@"
-fi
-
-if [ "$PDNS_TYPE" == "slave" ]; then
+	exec pdns_server 	--allow-recursion=172.17.0.0/24 \
+						--local-address=0.0.0.0 \
+						--api-key="$API_KEY" \
+						--webserver-password="$WEBSERVER_PASSWORD" \
+						"$@"
+elif [ "$PDNS_TYPE" == "slave" ]; then
 	exec pdns_server 	--allow-recursion=172.17.0.0/24 \
 						--local-address=0.0.0.0 \
 						--allow-notify-from=$MASTER_IP \
