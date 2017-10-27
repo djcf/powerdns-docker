@@ -15,6 +15,10 @@ if [ "$PDNS_TYPE" == "master" ]; then
 	exec pdns_server --allow-recursion=172.17.0.0/24 --local-address=0.0.0.0 --api-key="$API_KEY" --webserver-password="$WEBSERVER_PASSWORD" "$@"
 fi
 
+if [ "$PDNS_TYPE" == "ldap" ]; then
+        exec pdns_server --loglevel=9 --allow-recursion=172.17.0.0/24 --local-address=0.0.0.0 --api-key="$API_KEY" "$@"
+fi
+
 if [ "$PDNS_TYPE" == "slave" ]; then
 	exec pdns_server 	--allow-recursion=172.17.0.0/24 \
 						--local-address=0.0.0.0 \

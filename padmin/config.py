@@ -71,9 +71,9 @@ BASIC_ENABLED = False
 SIGNUP_ENABLED = False
 
 # POWERDNS CONFIG
-PDNS_STATS_URL = 'http://dns/api/v1/'
-#PDNS_API_KEY = os.environ['API_KEY']
-PDNS_API_KEY = "1234"
+PDNS_STATS_URL = 'http://master/api/v1/'
+PDNS_API_KEY = '1234' #os.environ['API_KEY']
+#PDNS_API_KEY = "1234"
 PDNS_VERSION = '4.0.3'
 
 # RECORDS ALLOWED TO EDIT

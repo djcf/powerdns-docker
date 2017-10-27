@@ -44,7 +44,7 @@
         environment:
           MASTER_IP: "{{ hostvars[groups['dnsmaster'][0]]['ansible_eth0']['ipv4']['address'] }}"
           MASTER_DNS: "{{ hostvars[groups['dnsmaster'][0]]['inventory_hostname'] }}"
-          API_KEY: "{{ pdns_port }}"
+          API_KEY: "{{ pdns_key }}"
 
     - name: Copy convenience scripts to host
       copy:

@@ -1,7 +1,7 @@
-FROM alpine:3.5
+FROM alpine:latest
 MAINTAINER daniel
 
-RUN apk add --update pdns pdns-backend-sqlite3 sqlite
+RUN apk add --update pdns pdns-backend-sqlite3 sqlite libldap pdns-backend-ldap openldap-dev strace
 
 ADD https://raw.githubusercontent.com/PowerDNS/pdns/master/modules/gsqlite3backend/schema.sqlite3.sql /etc/pdns/create_db.sql
 ADD https://gist.githubusercontent.com/djcf/bcd2f725652f46b4786e29ffdc32495c/raw /usr/local/bin/minify.sh
