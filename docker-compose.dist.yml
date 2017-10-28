@@ -1,0 +1,62 @@
+version: "2"
+
+services:
+    master:
+        build: powerdns
+        image: powerdns
+        restart: always
+        # external_links:
+        #     - openldap_app_1:ldap
+        ports:
+            - "53:5353"
+            - "53:5353/udp"
+            - "8040:8080"
+        volumes:
+            - "database:/etc/pdns/run/sqlite3"
+        environment:
+#            CONFIG: "ldap_binddn,ldap_secret,ldap_basedn,webserver"
+            CONFIG: "webserver"
+            PDNS_BACKENDS: "gsqlite3"
+            API_KEY: "1234"
+            WEBSERVER_PASSWORD: "1234"
+            # ldap_binddn: "xxx"
+            # ldap_secret: "xxx"
+            # ldap_basedn: "xxx"
+            webserver: "yes"
+        # logging:
+        #   options:
+        #     max-size: 25k
+        # networks:
+        #     - openldap_default
+
+    admin:
+        build: padmin
+        image: pdns_admin
+        # external_links:
+        #     - openldap_app_1:ldap
+        depends_on:
+            - master
+        volumes:
+            - "admin:/data"
+        ports:
+            - "8080:8080"
+        environment:
+            API_KEY: "1234"
+            SECRET_KEY: "1234"
+            ADMIN_PASSWORD: "1234"
+            # LDAP_TYPE: ldap
+            # LDAP_USERNAME: "111"
+            # LDAP_PASSWORD: "111"
+            # LDAP_SEARCH_BASE: "111"
+        networks:
+            # - openldap_default
+
+volumes:
+    database:
+        driver: local
+    admin:
+        driver: local
+
+# networks:
+    # openldap_default:
+    #     external: true
