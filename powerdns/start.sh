@@ -40,8 +40,8 @@ if [ "$PDNS_TYPE" == "slave" ]; then
 						"$@"
 else
 	exec pdns_server 	--allow-recursion=172.17.0.0/24 \
-					--local-address=0.0.0.0 \
-					--api-key="$API_KEY" \
-					--webserver-password="$WEBSERVER_PASSWORD" \
-					"$@"
+						--local-address=0.0.0.0 \
+						--api-key="$API_KEY" \
+						--webserver-password="$WEBSERVER_PASSWORD" \
+						"$@"
 fi

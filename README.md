@@ -39,7 +39,9 @@ Finally, the following should work for the slaves:
     docker run -d -p 53:53 -p 53:53/udp -e PDNS_TYPE=slave -e MASTER_DNS=f.q.d.n -e MASTER_IP=i.p. powerdns
 
 ## PowerDNS Admin
-Once you have the powerdns admin container up and running, you can add more admins using the `bin/create-pdns-admin.sh` script. The initial username is `admin` with whatever password you set the `ADMIN_PASSWORD` environment variable to be.
+Once you have the powerdns admin container up and running, you can add more admins using the command`docker exec -it power_admin_1 /src/create-pdns-admin.sh admin $password`. The initial username is `admin` with whatever password you set the `ADMIN_PASSWORD` environment variable to be.
+
+**Note that when LDAP logins are enabled, local users and the admin create script are disabled.**
 
 PowerDNS admin is a great project, find out more about it here: https://github.com/ngoduykhanh/PowerDNS-Admin
 
@@ -90,6 +92,21 @@ With this configuraiton, your docker-compose.yml file should contain:
         PDNS_BACKENDS: "gsqlite3,ldap"
 
 Once you have changed the config files, you **must** rebuild the image. All files named like `*.conf` in `powerdns` directory will be added to the image by the Dockerfile build script.
+
+# Configuring powerdns-admin
+
+This is also accomplished using docker-compose. For example:
+
+        environment:
+            API_KEY: "1234"
+            SECRET_KEY: "1234"
+            ADMIN_PASSWORD: "1234"
+            # LDAP_TYPE: ldap
+            # LDAP_USERNAME: login-dn
+            # LDAP_PASSWORD: ldap-password
+            # LDAP_SEARCH_BASE: ldap-searchbase
+
+**Note that when LDAP logins are enabled, local users and the admin create script are disabled.**
 
 ## TODO
 
