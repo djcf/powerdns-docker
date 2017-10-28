@@ -3,7 +3,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # BASIC APP CONFIG
 WTF_CSRF_ENABLED = True
-SECRET_KEY = 'We are the world'
+SECRET_KEY = os.environ['SECRET_KEY']
 BIND_ADDRESS = '0.0.0.0'
 PORT = 8080
 LOGIN_TITLE = "PDNS"
@@ -36,35 +36,30 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:////data/padmin.sqlite'
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
-# LDAP CONFIG
-# LDAP_TYPE = 'ldap'
-# LDAP_URI = 'ldaps://your-ldap-server:636'
-# LDAP_USERNAME = 'cn=dnsuser,ou=users,ou=services,dc=duykhanh,dc=me'
-# LDAP_PASSWORD = 'dnsuser'
-# LDAP_SEARCH_BASE = 'ou=System Admins,ou=People,dc=duykhanh,dc=me'
-# # Additional options only if LDAP_TYPE=ldap
-# LDAP_USERNAMEFIELD = 'uid'
-# LDAP_FILTER = '(objectClass=inetorgperson)'
+if "LDAP_TYPE" in os.environ:
+	# LDAP CONFIG
+	LDAP_TYPE = os.environ['LDAP_TYPE']
+	LDAP_URI = 'ldap://ldap/'
+	LDAP_USERNAME = os.environ['LDAP_USERNAME']
+	LDAP_PASSWORD = os.environ['LDAP_PASSWORD']
+	LDAP_SEARCH_BASE = os.environ['LDAP_SEARCH_BASE']
+	# # Additional options only if LDAP_TYPE=ldap
+	LDAP_USERNAMEFIELD = os.environ.get('LDAP_USERNAMEFIELD', 'uid')
+	LDAP_FILTER = os.environ.get('LDAP_USERNAMEFIELD', '(objectClass=inetorgperson)')
 
-## AD CONFIG
-#LDAP_TYPE = 'ad'
-#LDAP_URI = 'ldaps://your-ad-server:636'
-#LDAP_USERNAME = 'cn=dnsuser,ou=Users,dc=domain,dc=local'
-#LDAP_PASSWORD = 'dnsuser'
-#LDAP_SEARCH_BASE = 'dc=domain,dc=local'
-## You may prefer 'userPrincipalName' instead
-#LDAP_USERNAMEFIELD = 'sAMAccountName'
-## AD Group that you would like to have accesss to web app
-#LDAP_FILTER = 'memberof=cn=DNS_users,ou=Groups,dc=domain,dc=local'
+	## You may prefer 'userPrincipalName' instead
+	#LDAP_USERNAMEFIELD = 'sAMAccountName'
+	## AD Group that you would like to have accesss to web app
 
 # Github Oauth
-GITHUB_OAUTH_ENABLE = False
-# GITHUB_OAUTH_KEY = 'G0j1Q15aRsn36B3aD6nwKLiYbeirrUPU8nDd1wOC'
-# GITHUB_OAUTH_SECRET = '0WYrKWePeBDkxlezzhFbDn1PBnCwEa0vCwVFvy6iLtgePlpT7WfUlAa9sZgm'
-# GITHUB_OAUTH_SCOPE = 'email'
-# GITHUB_OAUTH_URL = 'http://127.0.0.1:5000/api/v3/'
-# GITHUB_OAUTH_TOKEN = 'http://127.0.0.1:5000/oauth/token'
-# GITHUB_OAUTH_AUTHORIZE = 'http://127.0.0.1:5000/oauth/authorize'
+GITHUB_OAUTH_ENABLE = os.environ.get('GITHUB_OAUTH_ENABLE', False)
+if GITHUB_OAUTH_ENABLE:
+	GITHUB_OAUTH_KEY = os.environ['GITHUB_OAUTH_KEY']
+	GITHUB_OAUTH_SECRET = os.environ['GITHUB_OAUTH_SECRET']
+	GITHUB_OAUTH_SCOPE = os.environ['GITHUB_OAUTH_SCOPE']
+	GITHUB_OAUTH_URL = os.environ['GITHUB_OAUTH_URL']
+	GITHUB_OAUTH_TOKEN = os.environ['GITHUB_OAUTH_TOKEN']
+	GITHUB_OAUTH_AUTHORIZE = os.environ['GITHUB_OAUTH_AUTHORIZE']
 
 #Default Auth
 BASIC_ENABLED = False
@@ -72,12 +67,11 @@ SIGNUP_ENABLED = False
 
 # POWERDNS CONFIG
 PDNS_STATS_URL = 'http://master/api/v1/'
-PDNS_API_KEY = '1234' #os.environ['API_KEY']
-#PDNS_API_KEY = "1234"
+PDNS_API_KEY = os.environ['API_KEY']
 PDNS_VERSION = '4.0.3'
 
 # RECORDS ALLOWED TO EDIT
-RECORDS_ALLOW_EDIT = ['A', 'AAAA', 'CNAME', 'SPF', 'PTR', 'MX', 'TXT']
+RECORDS_ALLOW_EDIT = ['A', 'SOA', 'AAAA', 'CNAME', 'SPF', 'PTR', 'MX', 'TXT']
 
 # EXPERIMENTAL FEATURES
 PRETTY_IPV6_PTR = False
