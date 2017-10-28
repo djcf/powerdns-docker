@@ -59,9 +59,9 @@ We can tell docker-compose to put powerdns configuration into pdns.conf at run-t
 
     environment:
         CONFIG: "ldap_binddn,ldap_secret,ldap_basedn"
-        ldap_basedn=xxx
-        ldap_binddn=yyy
-        ldap_secret=1234
+        ldap_basedn: xxx
+        ldap_binddn: yyy
+        ldap_secret: 1234
 
 In order for the `ldap_secret`, `ldap_basdn`, etc. to be added to `pdns.conf` at runtime as `ldap-secret`, `ldap-basedn` you must tell the init script which variables to include. This is the purpose of $CONFIG.
 
@@ -69,7 +69,7 @@ Note that you can configure any type of config here. For example:
 
     environment:
         CONFIG: "master"
-        master=yes
+        master: yes
 
 **NOTE that all powerdns config values containing hyphens should instead contain underscores, as above.**
 
