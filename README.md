@@ -52,14 +52,33 @@ In the `bin` directory. If you use ansible, they get installed to /usr/local/bin
 `pdns-cli.sh` is a wrapper into the pdns CLI utility. Full documentation here: https://blog.powerdns.com/2016/02/02/powerdns-authoritative-the-new-old-way-to-manage-domains/
 
 # Configuring the PDNS backends
+## Using environment variables
+We can tell docker-compose to put powerdns configuration into pdns.conf at run-time. Make sure your docker-compose.yml file looks like this:
 
+    environment:
+        CONFIG: "ldap_binddn,ldap_secret,ldap_basedn"
+        ldap_basedn=xxx
+        ldap_binddn=yyy
+        ldap_secret=1234
+
+In order for the `ldap_secret`, `ldap_basdn`, etc. to be added to `pdns.conf` at runtime as `ldap-secret`, `ldap-basedn` you must tell the init script which variables to include. This is the purpose of $CONFIG.
+
+Note that you can configure any type of config here. For example:
+
+    environment:
+        CONFIG: "master"
+        master=yes
+
+**NOTE that all powerdns config values containing hyphens should instead contain underscores, as above.**
+
+Once you have changed the powerdns config like this, you only have to run `docker-compose up -d`.
+
+## Using .conf files
 This is super simple and easy. Basically just put the config relating to the backends in `powerdns/$backend.conf`. Then in docker-compose.yml or your docker run command, specify the environment such that `PDNS_BACKENDS` is a string of comma-separated PDNS backends, to be passed into the pdns.conf file as `launch=$PDNS_BACKENDS`.
 
 For example, your `powerdns/ldap.conf` file could contain:
 
     ldap-host=ldap://ldap/
-    ldap-binddn=cn=admin,dc=ldap,dc=noflag,dc=io
-    ldap-secret=1234
 
 And your `powerdns/gsqlite3.conf` file could contain:
 
@@ -70,8 +89,8 @@ With this configuraiton, your docker-compose.yml file should contain:
     environment:
         PDNS_BACKENDS: "gsqlite3,ldap"
 
+Once you have changed the config files, you **must** rebuild the image. All files named like `*.conf` in `powerdns` directory will be added to the image by the Dockerfile build script.
+
 ## TODO
 
 * Only need to test it now...
-* It isn't currently possible to differentiate between "master" and "native"-type servers.
-* It would be super nice if backends could be configured by environment variables
